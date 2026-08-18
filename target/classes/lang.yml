@@ -1,0 +1,56 @@
+# Madenci Eklentisi Dil Dosyası
+
+# Genel Mesajlar
+prefix: "&6[Madenci] &r"
+no_permission: "&cBuna yetkin yok!"
+player_only: "&cBu komut sadece oyuncular için!"
+reloaded: "&aConfig yeniden yüklendi!"
+
+# Madenci Komutları
+miner_placed: "&aMadenci başarıyla konuldu!"
+miner_removed: "&aMadenci kaldırıldı!"
+no_miner: "&cMadencin yok!"
+stock_empty: "&eStok boş!"
+stock_header: "&6=== Madenci Stok ==="
+stock_footer: "&7Toplam: {current}/{capacity}"
+sold_all: "&aTüm stok satıldı! Kazanç: {money}"
+
+# Madenci NPC
+miner_name: "&6Madenci"
+miner_level: "&eSeviye: {level}"
+miner_capacity: "&eKapasite: {capacity}"
+
+# Otomatik Satış
+auto_sell_enabled: "&aOtomatik satış aktif!"
+auto_sell_disabled: "&cOtomatik satış kapalı!"
+auto_sell_message: "&eStok dolu, oto satış yapıldı! Kazanç: {money}"
+
+# Otomatik Kırma
+auto_break_enabled: "&aOtomatik kırma aktif!"
+auto_break_disabled: "&cOtomatik kırma kapalı!"
+block_blacklisted: "&cBu blok kırılamaz (kara listede)!"
+
+# Otomatik Toplama
+auto_collect_enabled: "&aOtomatik toplama aktif!"
+auto_collect_disabled: "&cOtomatik toplama kapalı!"
+
+# Seviye Sistemi
+level_up: "&aMadenci seviye atladı! Yeni seviye: {level}"
+not_enough_money: "&cSeviye atlamak için yeterli paran yok! Gerekli: {money}"
+max_level: "&cZaten maksimum seviyedesin!"
+
+# Vergi
+tax_deducted: "&eVergi kesintisi: {tax} ({rate}%)"
+
+# Hata Mesajları
+error_occurred: "&cBir hata oluştu!"
+config_error: "&cConfig yüklenirken hata oluştu!"
+data_error: "&cVeri yüklenirken hata oluştu!"
+
+# Yardım
+help_header: "&6=== Madenci Komutları ==="
+help_koy: "&e/madenci koy &7- Madenci koy"
+help_kaldir: "&e/madenci kaldir &7- Madenci kaldır"
+help_stok: "&e/madenci stok &7- Stok görüntüle"
+help_sat: "&e/madenci sat &7- Stok sat"
+help_reload: "&e/madenci reload &7- Config yeniden yükle"

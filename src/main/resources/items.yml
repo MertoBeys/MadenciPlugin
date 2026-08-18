@@ -1,0 +1,37 @@
+Items:
+  demir:
+    material: iron_ingot
+    price: 2.0
+  altin:
+    material: gold_ingot
+    price: 5.0
+  elmas:
+    material: diamond
+    price: 15.0
+  zümrüt:
+    material: emerald
+    price: 20.0
+  kömür:
+    material: coal
+    price: 0.5
+  kiziltas:
+    material: redstone
+    price: 1.0
+  lapis:
+    material: lapis_lazuli
+    price: 1.5
+  demir_parçasi:
+    material: iron_nugget
+    price: 0.2
+  altin_parçasi:
+    material: gold_nugget
+    price: 0.5
+  obsidyen:
+    material: obsidian
+    price: 3.0
+  kuvars:
+    material: quartz
+    price: 1.0
+  bakir:
+    material: copper_ingot
+    price: 3.0

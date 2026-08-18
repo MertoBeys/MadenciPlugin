@@ -1,0 +1,111 @@
+# Madencinin ayarları
+Settings:
+   # Claimlere özel madenci konması sağlanır.
+   # Sonradan açılamaz madenci verilerinin SIFIRLANMASI GEREKİR!
+   # /madenci reload ile değişmez hata verir kapatıp açılması gereklidir.
+   useClaims: false
+   # Madencinin çalışması için ada üyelerinden birisinin
+   # Çevrim içi olması gereksin mi?
+   requireOnline: false
+   # Madencinin seviyesini elmas üzerinden işler!
+   # DIKKAT Bunun için lang.yml'de madencinin elmas adında
+   # {level} placeholderını kullanmanız gerekli! Kullanmazsanız
+   # Eklenti düzgün çalışmaz!
+   levelBasedMiner: false
+   # Oyuncunun yere attığı ürünleri madenci toplasın mı toplamasın mı ayarıdır.
+   # true yapılırsa madenci oyuncu tarafından atılan ürünleri envanterine almaz.
+   # false yapılırsa madenci oyuncu tarafından atılan ürünleri de toplar.
+   playerDropCancel: false
+   # Madenci menüsüne erişim sadece lidere mi olsun ayarıdır.
+   onlyLeader: false
+   # Madencinin çalışacağı dünyalar.
+   defaultWorld:
+   - ASkyBlock
+   - ASkyBlock_nether
+   # Madenciyi parayla alabilir mi?
+   buyMiner:
+      feature: false
+      price: 50000
+   # Ürün satılınca para kime yatırılacak ayarları.
+   depositMethod:
+      # Lider kime yatırılacağını seçebilsin. (Satan kişiye veya Lidere)
+      leaderChoose: true
+      # Varsayılan olarak parayı lidere yatır.
+      defaultDepositLeader: false
+
+AddonSettings:
+   # Madencinin çalışabileceği dünyaların listesi aşağıdadır.
+   # Örneğin skyblock eklentileri sadece kendi dünyalarında çalışır.
+   # Onların dünyasını aşağı yazın kapatmak isterseniz aşağıdan gerekli dünyaları silin.
+   # Madencinin stok dolduğunda oto satış yapma özelliğini açar.
+   # Yetkisi: madenci.autosell
+   autoSell:
+      feature: true
+      sendMessage: true
+   # Madenci blokları otomatik kırma ayarıdır.
+   # Yetkisi: madenci.autobreak
+   autoBreak:
+      withoutMiner: false
+      toggle: true
+      blacklist:
+      - BEDROCK
+      - OBSIDIAN
+   # Performansı direkt olarak etkileyebilecek bir ayardır.
+   # Açılması yeterli değildir Items.yml'den de ayarlanması gerekir.
+   # BETA aşamasındadır. Kullanımı riskleri kabul ederek açın.
+   # Yetkisi: madenci.autocollect
+   autoCollect:
+      feature: true
+      withoutMiner: false
+      toggle: true
+      requirePiston: false
+      ignoreStock: true
+
+# Vergi ayarları:
+tax:
+   # Vergi ayarlarıdır. (0 yazarak devre dışı bırakılabilir.)
+   taxRate: 10
+   # Vergi bir hesaba yatırılsın mı? Yoksa sadece oyuncuya eksik para mı verilsin?
+   depositToAcc: false
+   # Verginin yatırılacağı oyuncu.
+   taxAcc: Geyik
+
+# Detaylı ayarlardır. Bilginiz yoksa lütfen ellemeyin.
+DetailedSettings:
+   # NPC'leri sync olarak koyup geri alır.
+   # Açılırsa async olarak bu işlemi yapar. Lag anında
+   # veya kötü performans anında npcler ara sıra görünmeyebilir.
+   # 15 blok uzaklaşılıp geri girildiğinde tekrar çalışır.
+   asyncNPC: false
+   # /madenci shutdown komutu ile bütün madencileri durdurur.
+   # Madencinin hiç bir işlevi çalışmaz.
+   # Bu ayar ise default durumunu belirler
+   shutDown: false
+   # Blok kırıldığında ses çıksın mı
+   playSound: true
+   # Eşyayı alırken vergi keserek eksik item verir.
+   taxOnTake: false
+   # Sadece oyuncunun sahip olduğu madencileri tarar
+   scanOnlyAdded: false
+   
+      
+# Madenci seviye ayarları:
+# İstenildiği kadar seviye eklenebilir.
+# Metod kopyalanarak 1-2-3-4-....-x şeklinde uzatılabilir.
+# Değişkenler:
+# taxRate: seviyeye özel vergi oranı
+# permission: buraya seviye atlanması için istediğiniz permi yazın.
+MinerLevels:
+   1:
+     # Madencinin mevcut kapasitesini belirler.
+     Capacity: 1000
+     # Sıradaki aşama için gerekli parayı belirler. Son seviye için girilmesine gerek yoktur.
+     nextRankMoney: 10000
+   2:
+     Capacity: 3000
+     nextRankMoney: 20000
+     taxRate: 7
+   3:
+     Capacity: 10000
+     permission: madenci.vip
+     taxRate: 5
