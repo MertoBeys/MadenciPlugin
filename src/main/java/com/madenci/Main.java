@@ -15,6 +15,12 @@ public class Main extends JavaPlugin {
         saveDefaultConfig();
         saveResource("items.yml", false);
         
+        // Veri yöneticisini başlat
+        DataManager.setup(this);
+        
+        // Madencileri yükle
+        MinerManager.loadMiners();
+        
         getLogger().info("Madenci eklentisi aktif!");
         
         // Komutları kaydet
@@ -27,6 +33,12 @@ public class Main extends JavaPlugin {
     
     @Override
     public void onDisable() {
+        // Tüm madencileri kaydet
+        MinerManager.saveAllMiners();
+        
+        // Madencileri kapat
+        MinerManager.shutdownAll();
+        
         getLogger().info("Madenci eklentisi kapatıldı!");
     }
     

@@ -26,6 +26,7 @@ public class MinerManager {
         
         MinerNPC miner = new MinerNPC(player.getUniqueId(), loc);
         miners.put(player.getUniqueId(), miner);
+        DataManager.saveMiner(player.getUniqueId(), miner);
     }
     
     public static void removeMiner(Player player) {
@@ -33,6 +34,7 @@ public class MinerManager {
         if (miner != null) {
             miner.removeNPC();
             miners.remove(player.getUniqueId());
+            DataManager.removeMiner(player.getUniqueId());
         }
     }
     
@@ -187,5 +189,52 @@ public class MinerManager {
             miner.removeNPC();
         }
         miners.clear();
+    }
+    
+    public static void loadMiners() {
+        DataManager.reloadData();
+        
+        if (DataManager.getData().contains("miners")) {
+            for (String uuidStr : DataManager.getData().getConfigurationSection("miners").getKeys(false)) {
+                try {
+                    UUID uuid = UUID.fromString(uuidStr);
+                    String path = "miners." + uuidStr;
+                    
+                    String worldName = DataManager.getData().getString(path + ".location.world");
+                    double x = DataManager.getData().getDouble(path + ".location.x");
+                    double y = DataManager.getData().getDouble(path + ".location.y");
+                    double z = DataManager.getData().getDouble(path + ".location.z");
+                    int level = DataManager.getData().getInt(path + ".level", 1);
+                    
+                    if (org.bukkit.Bukkit.getWorld(worldName) != null) {
+                        Location loc = new Location(org.bukkit.Bukkit.getWorld(worldName), x, y, z);
+                        MinerNPC miner = new MinerNPC(uuid, loc);
+                        
+                        // Seviyeyi ayarla
+                        for (int i = 1; i < level; i++) {
+                            miner.upgradeLevel();
+                        }
+                        
+                        // Stok yükle
+                        if (DataManager.getData().contains(path + ".stock")) {
+                            for (String item : DataManager.getData().getConfigurationSection(path + ".stock").getKeys(false)) {
+                                int amount = DataManager.getData().getInt(path + ".stock." + item);
+                                miner.addItem(item, amount);
+                            }
+                        }
+                        
+                        miners.put(uuid, miner);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    
+    public static void saveAllMiners() {
+        for (java.util.Map.Entry<UUID, MinerNPC> entry : miners.entrySet()) {
+            DataManager.saveMiner(entry.getKey(), entry.getValue());
+        }
     }
 }
