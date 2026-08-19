@@ -29,6 +29,7 @@ public class Main extends JavaPlugin {
         // Event listener'ları kaydet
         Bukkit.getPluginManager().registerEvents(new MadenciListener(), this);
         Bukkit.getPluginManager().registerEvents(new MadenciGUIListener(), this);
+        Bukkit.getPluginManager().registerEvents(new NPCInteractionListener(), this);
     }
     
     @Override

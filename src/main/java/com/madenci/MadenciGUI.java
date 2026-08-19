@@ -16,43 +16,139 @@ public class MadenciGUI {
     private static final String GUI_TITLE = ChatColor.GOLD + "Madenci Menüsü";
     
     public static void openMainMenu(Player player) {
+        MinerNPC miner = MinerManager.getMiner(player);
+        
         Inventory inv = Bukkit.createInventory(null, 27, GUI_TITLE);
         
-        // Madenci Koy
-        ItemStack placeMiner = createItem(Material.DIAMOND_PICKAXE, 
-            ChatColor.GREEN + "Madenci Koy", 
-            ChatColor.GRAY + "Madenci NPC koyar");
-        inv.setItem(11, placeMiner);
-        
-        // Madenci Kaldır
-        ItemStack removeMiner = createItem(Material.BARRIER, 
-            ChatColor.RED + "Madenci Kaldır", 
-            ChatColor.GRAY + "Madenci NPC kaldırır");
-        inv.setItem(13, removeMiner);
-        
-        // Stok Görüntüle
-        ItemStack viewStock = createItem(Material.CHEST, 
-            ChatColor.YELLOW + "Stok Görüntüle", 
-            ChatColor.GRAY + "Madenci stokunu gösterir");
-        inv.setItem(15, viewStock);
-        
-        // Stok Sat
-        ItemStack sellStock = createItem(Material.GOLD_INGOT, 
-            ChatColor.GOLD + "Stok Sat", 
-            ChatColor.GRAY + "Stoktaki itemleri satar");
-        inv.setItem(20, sellStock);
-        
-        // Seviye Bilgisi
-        ItemStack levelInfo = createItem(Material.EXPERIENCE_BOTTLE, 
-            ChatColor.AQUA + "Seviye Bilgisi", 
-            ChatColor.GRAY + "Madenci seviyesini gösterir");
-        inv.setItem(22, levelInfo);
+        if (miner != null) {
+            // Yönetici Paneli
+            ItemStack managementPanel = createItem(Material.PLAYER_HEAD, 
+                ChatColor.YELLOW + "Yönetici Paneli", 
+                ChatColor.GRAY + "Yönetici Paneline eriş",
+                "",
+                ChatColor.GOLD + "Madenci İstatistikleri:",
+                ChatColor.GRAY + " ▪ Seviye: " + ChatColor.GREEN + miner.getLevel(),
+                ChatColor.GRAY + " ▪ Kapasite: " + ChatColor.GREEN + miner.getCapacity(),
+                ChatColor.GRAY + " ▪ Mevcut Stok: " + ChatColor.GREEN + miner.getCurrentStock(),
+                "",
+                ChatColor.YELLOW + "Yönetici Paneli için TIKLA!");
+            inv.setItem(13, managementPanel);
+            
+            // Stok Görüntüle
+            ItemStack viewStock = createItem(Material.CHEST, 
+                ChatColor.YELLOW + "Stok Görüntüle", 
+                ChatColor.GRAY + "Madenci stokunu gösterir");
+            inv.setItem(15, viewStock);
+        } else {
+            // Madenci Koy
+            ItemStack placeMiner = createItem(Material.DIAMOND_PICKAXE, 
+                ChatColor.GREEN + "Madenci Koy", 
+                ChatColor.GRAY + "Madenci NPC koyar");
+            inv.setItem(13, placeMiner);
+        }
         
         // Kapat
         ItemStack close = createItem(Material.RED_STAINED_GLASS_PANE, 
             ChatColor.RED + "Kapat", 
             ChatColor.GRAY + "Menüyü kapatır");
         inv.setItem(26, close);
+        
+        player.openInventory(inv);
+    }
+    
+    public static void openManagementPanel(Player player) {
+        MinerNPC miner = MinerManager.getMiner(player);
+        if (miner == null) {
+            player.sendMessage(ChatColor.RED + "Madencin yok!");
+            return;
+        }
+        
+        Inventory inv = Bukkit.createInventory(null, 45, ChatColor.GOLD + "Yönetici Paneli");
+        
+        // Seviye Atlama
+        ItemStack upgrade = createItem(Material.DIAMOND, 
+            ChatColor.GREEN + "Seviye Atla", 
+            ChatColor.GRAY + "Madenci seviyesini yükselt",
+            "",
+            ChatColor.GRAY + "Mevcut Seviye: " + ChatColor.YELLOW + miner.getLevel(),
+            ChatColor.GRAY + "Mevcut Kapasite: " + ChatColor.YELLOW + miner.getCapacity(),
+            "",
+            ChatColor.YELLOW + "Yükseltmek için TIKLA!");
+        inv.setItem(12, upgrade);
+        
+        // Satış Ayarı
+        ItemStack sellMode = createItem(Material.GOLD_INGOT, 
+            ChatColor.YELLOW + "Satış Ayarı", 
+            ChatColor.GRAY + "Satışların kime gideceğini belirle",
+            "",
+            ChatColor.GRAY + "Mevcut: " + ChatColor.YELLOW + "Oyuncu",
+            "",
+            ChatColor.YELLOW + "Değiştirmek için TIKLA!");
+        inv.setItem(14, sellMode);
+        
+        // Yer Değiştirme
+        ItemStack relocate = createItem(Material.COMPASS, 
+            ChatColor.AQUA + "Yer Değiştirme", 
+            ChatColor.GRAY + "Madencinin yerini değiştir",
+            "",
+            ChatColor.YELLOW + "Yer değiştirmek için TIKLA!");
+        inv.setItem(16, relocate);
+        
+        // Sistemler
+        ItemStack systems = createItem(Material.REDSTONE, 
+            ChatColor.RED + "Sistemler", 
+            ChatColor.GRAY + "Sistem ayarlarını aç",
+            "",
+            ChatColor.YELLOW + "Sistemler için TIKLA!");
+        inv.setItem(22, systems);
+        
+        // Geri butonu
+        ItemStack backButton = createItem(Material.ARROW, 
+            ChatColor.YELLOW + "Geri", 
+            ChatColor.GRAY + "Ana menüye dön");
+        inv.setItem(40, backButton);
+        
+        player.openInventory(inv);
+    }
+    
+    public static void openSystemsPanel(Player player) {
+        Inventory inv = Bukkit.createInventory(null, 45, ChatColor.GOLD + "Sistem Ayarları");
+        
+        // Oto Satış
+        ItemStack autoSell = createItem(Material.GOLD_BLOCK, 
+            ChatColor.YELLOW + "Oto Satış", 
+            ChatColor.GRAY + "Stok dolduğunda otomatik satış",
+            "",
+            ChatColor.GRAY + "Durum: " + ChatColor.RED + "Kapalı",
+            "",
+            ChatColor.YELLOW + "Değiştirmek için TIKLA!");
+        inv.setItem(12, autoSell);
+        
+        // Oto Toplama
+        ItemStack autoCollect = createItem(Material.HOPPER, 
+            ChatColor.AQUA + "Oto Toplama", 
+            ChatColor.GRAY + "Düşen itemleri otomatik toplar",
+            "",
+            ChatColor.GRAY + "Durum: " + ChatColor.RED + "Kapalı",
+            "",
+            ChatColor.YELLOW + "Değiştirmek için TIKLA!");
+        inv.setItem(14, autoCollect);
+        
+        // Oto Kırma
+        ItemStack autoBreak = createItem(Material.DIAMOND_PICKAXE, 
+            ChatColor.GREEN + "Oto Kırma", 
+            ChatColor.GRAY + "Maden bloklarını otomatik kırar",
+            "",
+            ChatColor.GRAY + "Durum: " + ChatColor.RED + "Kapalı",
+            "",
+            ChatColor.YELLOW + "Değiştirmek için TIKLA!");
+        inv.setItem(16, autoBreak);
+        
+        // Geri butonu
+        ItemStack backButton = createItem(Material.ARROW, 
+            ChatColor.YELLOW + "Geri", 
+            ChatColor.GRAY + "Yönetici paneline dön");
+        inv.setItem(40, backButton);
         
         player.openInventory(inv);
     }
@@ -80,8 +176,18 @@ public class MadenciGUI {
             if (meta != null) {
                 meta.setDisplayName(ChatColor.WHITE + itemName);
                 List<String> lore = new ArrayList<>();
-                lore.add(ChatColor.GRAY + "Miktar: " + ChatColor.GREEN + amount);
-                lore.add(ChatColor.GRAY + "Fiyat: " + ChatColor.YELLOW + getPrice(itemName));
+                lore.add("");
+                lore.add(ChatColor.GRAY + "Mevcut stok: " + ChatColor.WHITE + amount + ChatColor.GRAY + "/" + ChatColor.RED + miner.getCapacity());
+                lore.add(ChatColor.GRAY + "Birim fiyatı: " + ChatColor.WHITE + getPrice(itemName));
+                lore.add(ChatColor.GRAY + "Doluluk Oranı: " + ChatColor.WHITE + getProgressPercent(amount, miner.getCapacity()) + "%");
+                lore.add(ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + "  [" + getProgressBar(amount, miner.getCapacity()) + ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + "]");
+                lore.add("");
+                lore.add(ChatColor.GRAY + "64 adet almak için " + ChatColor.DARK_GRAY + "[" + ChatColor.YELLOW + "Sol Tık" + ChatColor.DARK_GRAY + "]");
+                lore.add(ChatColor.GRAY + "Hepsini almak için " + ChatColor.DARK_GRAY + "[" + ChatColor.YELLOW + "Sağ Tık" + ChatColor.DARK_GRAY + "]");
+                lore.add(ChatColor.GRAY + "Hepsini satmak için " + ChatColor.DARK_GRAY + "[" + ChatColor.YELLOW + "Shift + Sağ Tık" + ChatColor.DARK_GRAY + "]");
+                lore.add("");
+                lore.add(ChatColor.DARK_RED + "NOT: " + ChatColor.RED + "Hepsini satma işleminde");
+                lore.add(ChatColor.RED + "madenciye vergi ödersin!");
                 meta.setLore(lore);
                 item.setItemMeta(meta);
             }
@@ -91,17 +197,86 @@ public class MadenciGUI {
             if (slot >= 45) break;
         }
         
-        // Sat butonu
-        ItemStack sellButton = createItem(Material.GOLD_INGOT, 
+        // Tümünü Sat butonu
+        ItemStack sellAllButton = createItem(Material.GOLD_INGOT, 
             ChatColor.GREEN + "Tümünü Sat", 
             ChatColor.GRAY + "Stoktaki tüm itemleri satar");
-        inv.setItem(49, sellButton);
+        inv.setItem(49, sellAllButton);
         
         // Geri butonu
         ItemStack backButton = createItem(Material.ARROW, 
             ChatColor.YELLOW + "Geri", 
             ChatColor.GRAY + "Ana menüye dön");
         inv.setItem(53, backButton);
+        
+        player.openInventory(inv);
+    }
+    
+    public static void openItemMenu(Player player, String itemName) {
+        MinerNPC miner = MinerManager.getMiner(player);
+        if (miner == null) {
+            player.sendMessage(ChatColor.RED + "Madencin yok!");
+            return;
+        }
+        
+        int amount = miner.getItemAmount(itemName);
+        if (amount == 0) {
+            player.sendMessage(ChatColor.RED + "Bu item stokta yok!");
+            return;
+        }
+        
+        Inventory inv = Bukkit.createInventory(null, 45, ChatColor.GOLD + "İşlem: " + itemName);
+        
+        Material material = getMaterialFromItemName(itemName);
+        
+        // Item bilgisi
+        ItemStack infoItem = createItem(material, 
+            ChatColor.WHITE + itemName, 
+            ChatColor.GRAY + "Stok: " + ChatColor.GREEN + amount,
+            ChatColor.GRAY + "Fiyat: " + ChatColor.YELLOW + getPrice(itemName) + " birim");
+        inv.setItem(13, infoItem);
+        
+        // Tekli Al
+        ItemStack takeOne = createItem(Material.GREEN_STAINED_GLASS_PANE, 
+            ChatColor.GREEN + "1 Al", 
+            ChatColor.GRAY + "1 adet item al");
+        inv.setItem(19, takeOne);
+        
+        // 64'lü Al
+        ItemStack take64 = createItem(Material.LIME_STAINED_GLASS_PANE, 
+            ChatColor.GREEN + "64 Al", 
+            ChatColor.GRAY + "64 adet item al");
+        inv.setItem(20, take64);
+        
+        // Hepsini Al
+        ItemStack takeAll = createItem(Material.GREEN_WOOL, 
+            ChatColor.GREEN + "Hepsini Al", 
+            ChatColor.GRAY + "Tüm itemleri al");
+        inv.setItem(21, takeAll);
+        
+        // Tekli Sat
+        ItemStack sellOne = createItem(Material.RED_STAINED_GLASS_PANE, 
+            ChatColor.RED + "1 Sat", 
+            ChatColor.GRAY + "1 adet item sat");
+        inv.setItem(23, sellOne);
+        
+        // 64'lü Sat
+        ItemStack sell64 = createItem(Material.RED_WOOL, 
+            ChatColor.RED + "64 Sat", 
+            ChatColor.GRAY + "64 adet item sat");
+        inv.setItem(24, sell64);
+        
+        // Hepsini Sat
+        ItemStack sellAll = createItem(Material.REDSTONE_BLOCK, 
+            ChatColor.RED + "Hepsini Sat", 
+            ChatColor.GRAY + "Tüm itemleri sat");
+        inv.setItem(25, sellAll);
+        
+        // Geri butonu
+        ItemStack backButton = createItem(Material.ARROW, 
+            ChatColor.YELLOW + "Geri", 
+            ChatColor.GRAY + "Stok menüsüne dön");
+        inv.setItem(40, backButton);
         
         player.openInventory(inv);
     }
@@ -176,5 +351,26 @@ public class MadenciGUI {
     
     private static double getPrice(String itemName) {
         return Main.getInstance().getConfig().getDouble("Items." + itemName + ".price", 0.0);
+    }
+    
+    private static String getProgressPercent(int current, int max) {
+        if (max == 0) return "0";
+        double percent = (double) current / max * 100;
+        return String.format("%.1f", percent);
+    }
+    
+    private static String getProgressBar(int current, int max) {
+        if (max == 0) return ChatColor.RED + "▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪";
+        double percent = (double) current / max;
+        int filled = (int) (percent * 20);
+        StringBuilder bar = new StringBuilder();
+        for (int i = 0; i < 20; i++) {
+            if (i < filled) {
+                bar.append(ChatColor.GREEN).append("▪");
+            } else {
+                bar.append(ChatColor.RED).append("▪");
+            }
+        }
+        return bar.toString();
     }
 }

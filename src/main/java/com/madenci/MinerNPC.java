@@ -111,6 +111,10 @@ public class MinerNPC {
         }
     }
     
+    public org.bukkit.entity.Entity getNPC() {
+        return villager;
+    }
+    
     public UUID getOwnerUUID() {
         return ownerUUID;
     }
