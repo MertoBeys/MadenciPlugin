@@ -118,16 +118,28 @@ public class MadenciGUIListener implements Listener {
     }
     
     private void handleSystemsPanelClick(Player player, String itemName) {
+        MinerNPC miner = MinerManager.getMiner(player);
+        if (miner == null) {
+            player.sendMessage(ChatColor.RED + "Madencin yok!");
+            return;
+        }
+
         if (itemName.equals(ChatColor.YELLOW + "Oto Satış")) {
-            player.sendMessage(ChatColor.YELLOW + "Oto satış ayarı değiştirildi!");
+            boolean newState = !miner.isAutoSell();
+            miner.setAutoSell(newState);
+            player.sendMessage(ChatColor.YELLOW + "Oto satış durumu: " + (newState ? ChatColor.GREEN + "Açıldı" : ChatColor.RED + "Kapatıldı"));
             MadenciGUI.openSystemsPanel(player);
         }
         else if (itemName.equals(ChatColor.AQUA + "Oto Toplama")) {
-            player.sendMessage(ChatColor.YELLOW + "Oto toplama ayarı değiştirildi!");
+            boolean newState = !miner.isAutoCollect();
+            miner.setAutoCollect(newState);
+            player.sendMessage(ChatColor.YELLOW + "Oto toplama durumu: " + (newState ? ChatColor.GREEN + "Açıldı" : ChatColor.RED + "Kapatıldı"));
             MadenciGUI.openSystemsPanel(player);
         }
         else if (itemName.equals(ChatColor.GREEN + "Oto Kırma")) {
-            player.sendMessage(ChatColor.YELLOW + "Oto kırma ayarı değiştirildi!");
+            boolean newState = !miner.isAutoBreak();
+            miner.setAutoBreak(newState);
+            player.sendMessage(ChatColor.YELLOW + "Oto kırma durumu: " + (newState ? ChatColor.GREEN + "Açıldı" : ChatColor.RED + "Kapatıldı"));
             MadenciGUI.openSystemsPanel(player);
         }
         else if (itemName.equals(ChatColor.YELLOW + "Geri")) {
@@ -143,13 +155,12 @@ public class MadenciGUIListener implements Listener {
             }
             MinerManager.sellItems(player);
             player.sendMessage(ChatColor.GREEN + "Tüm stok satıldı!");
-            MadenciGUI.openStockMenu(player); // Menüyü yenile
+            MadenciGUI.openStockMenu(player);
         }
         else if (itemName.equals(ChatColor.YELLOW + "Geri")) {
             MadenciGUI.openMainMenu(player);
         }
         else if (slot < 45 && !itemName.equals(ChatColor.GREEN + "Tümünü Sat") && !itemName.equals(ChatColor.YELLOW + "Geri")) {
-            // Item'e tıklandı, sol tık/sağ tık/shift+tık kontrolü
             String targetItem = ChatColor.stripColor(itemName);
             MinerNPC miner = MinerManager.getMiner(player);
             if (miner == null) {
@@ -163,7 +174,6 @@ public class MadenciGUIListener implements Listener {
                 return;
             }
             
-            // Sol tık: 64 al
             if (event.isLeftClick() && !event.isShiftClick()) {
                 int takeAmount = Math.min(64, currentAmount);
                 miner.removeItem(targetItem, takeAmount);
@@ -171,19 +181,16 @@ public class MadenciGUIListener implements Listener {
                 player.sendMessage(ChatColor.GREEN + String.valueOf(takeAmount) + " adet " + targetItem + " aldın!");
                 MadenciGUI.openStockMenu(player);
             }
-            // Sağ tık: Hepsini al
             else if (event.isRightClick() && !event.isShiftClick()) {
                 miner.removeItem(targetItem, currentAmount);
                 giveItemToPlayer(player, targetItem, currentAmount);
                 player.sendMessage(ChatColor.GREEN + "Tüm " + targetItem + " aldın!");
                 MadenciGUI.openStockMenu(player);
             }
-            // Shift + Sağ tık: Hepsini sat
             else if (event.isRightClick() && event.isShiftClick()) {
                 miner.removeItem(targetItem, currentAmount);
                 double price = Main.getInstance().getConfig().getDouble("Items." + targetItem + ".price", 0.0);
                 double total = price * currentAmount;
-                // Para yatırma (Vault entegrasyonu gerekli)
                 player.sendMessage(ChatColor.GREEN + "Tüm " + targetItem + " sattın! Kazanç: " + total);
                 MadenciGUI.openStockMenu(player);
             }
@@ -204,7 +211,6 @@ public class MadenciGUIListener implements Listener {
             return;
         }
         
-        // Tekli Al
         if (buttonName.equals(ChatColor.GREEN + "1 Al")) {
             if (currentAmount >= 1) {
                 miner.removeItem(targetItem, 1);
@@ -213,7 +219,6 @@ public class MadenciGUIListener implements Listener {
                 MadenciGUI.openItemMenu(player, targetItem);
             }
         }
-        // 64'lü Al
         else if (buttonName.equals(ChatColor.GREEN + "64 Al")) {
             int takeAmount = Math.min(64, currentAmount);
             miner.removeItem(targetItem, takeAmount);
@@ -221,43 +226,35 @@ public class MadenciGUIListener implements Listener {
             player.sendMessage(ChatColor.GREEN + String.valueOf(takeAmount) + " adet " + targetItem + " aldın!");
             MadenciGUI.openItemMenu(player, targetItem);
         }
-        // Hepsini Al
         else if (buttonName.equals(ChatColor.GREEN + "Hepsini Al")) {
             miner.removeItem(targetItem, currentAmount);
             giveItemToPlayer(player, targetItem, currentAmount);
             player.sendMessage(ChatColor.GREEN + "Tüm " + targetItem + " aldın!");
             MadenciGUI.openStockMenu(player);
         }
-        // Tekli Sat
         else if (buttonName.equals(ChatColor.RED + "1 Sat")) {
             if (currentAmount >= 1) {
                 miner.removeItem(targetItem, 1);
                 double price = Main.getInstance().getConfig().getDouble("Items." + targetItem + ".price", 0.0);
-                // Para yatırma (Vault entegrasyonu gerekli)
                 player.sendMessage(ChatColor.GREEN + "1 adet " + targetItem + " sattın! Kazanç: " + price);
                 MadenciGUI.openItemMenu(player, targetItem);
             }
         }
-        // 64'lü Sat
         else if (buttonName.equals(ChatColor.RED + "64 Sat")) {
             int sellAmount = Math.min(64, currentAmount);
             miner.removeItem(targetItem, sellAmount);
             double price = Main.getInstance().getConfig().getDouble("Items." + targetItem + ".price", 0.0);
             double total = price * sellAmount;
-            // Para yatırma (Vault entegrasyonu gerekli)
             player.sendMessage(ChatColor.GREEN + String.valueOf(sellAmount) + " adet " + targetItem + " sattın! Kazanç: " + total);
             MadenciGUI.openItemMenu(player, targetItem);
         }
-        // Hepsini Sat
         else if (buttonName.equals(ChatColor.RED + "Hepsini Sat")) {
             miner.removeItem(targetItem, currentAmount);
             double price = Main.getInstance().getConfig().getDouble("Items." + targetItem + ".price", 0.0);
             double total = price * currentAmount;
-            // Para yatırma (Vault entegrasyonu gerekli)
             player.sendMessage(ChatColor.GREEN + "Tüm " + targetItem + " sattın! Kazanç: " + total);
             MadenciGUI.openStockMenu(player);
         }
-        // Geri
         else if (buttonName.equals(ChatColor.YELLOW + "Geri")) {
             MadenciGUI.openStockMenu(player);
         }
@@ -302,15 +299,6 @@ public class MadenciGUIListener implements Listener {
                 player.sendMessage(ChatColor.RED + "Zaten maksimum seviyedesin!");
                 return;
             }
-            
-            // Seviye atlama mantığı (para kontrolü vs.)
-            // Para kontrolü (Vault entegrasyonu gerekli)
-            // int nextRankMoney = Main.getInstance().getConfig()
-            //     .getInt("MinerLevels." + miner.getLevel() + ".nextRankMoney");
-            // if (EconomyManager.getBalance(player) < nextRankMoney) {
-            //     player.sendMessage(ChatColor.RED + "Yeterli paran yok! Gerekli: " + nextRankMoney);
-            //     return;
-            // }
             
             miner.upgradeLevel();
             player.sendMessage(ChatColor.GREEN + "Seviye atladın! Yeni seviye: " + miner.getLevel());

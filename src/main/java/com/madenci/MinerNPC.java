@@ -18,12 +18,22 @@ public class MinerNPC {
     private int level;
     private int capacity;
     
+    // Sistem Ayarları (Eksik olan değişkenler eklendi)
+    private boolean autoSell;
+    private boolean autoCollect;
+    private boolean autoBreak;
+    
     public MinerNPC(UUID ownerUUID, Location location) {
         this.ownerUUID = ownerUUID;
         this.location = location;
         this.stock = new HashMap<>();
         this.level = 1;
         this.capacity = Main.getInstance().getConfig().getInt("MinerLevels.1.Capacity");
+        
+        // Varsayılan sistem durumları (Config'den de çekilebilir)
+        this.autoSell = false;
+        this.autoCollect = false;
+        this.autoBreak = false;
         
         spawnNPC();
     }
@@ -37,18 +47,23 @@ public class MinerNPC {
     }
     
     public void addItem(String itemName, int amount) {
-        int currentAmount = stock.getOrDefault(itemName, 0);
-        int newAmount = currentAmount + amount;
+        int currentStock = getCurrentStock();
         
-        if (newAmount <= capacity) {
-            stock.put(itemName, newAmount);
-        } else {
-            stock.put(itemName, capacity);
+        // Eğer mevcut stok + eklenecek miktar kapasiteyi aşıyorsa
+        if (currentStock + amount > capacity) {
+            int spaceLeft = Math.max(0, capacity - currentStock);
+            if (spaceLeft > 0) {
+                int existing = stock.getOrDefault(itemName, 0);
+                stock.put(itemName, existing + spaceLeft);
+            }
             
-            // Stok doluysa oto satış
-            if (Main.getInstance().getConfig().getBoolean("AddonSettings.autoSell.feature")) {
+            // Stok dolduysa ve oto satış açıksa
+            if (autoSell || Main.getInstance().getConfig().getBoolean("AddonSettings.autoSell.feature")) {
                 sellAllItems();
             }
+        } else {
+            int existing = stock.getOrDefault(itemName, 0);
+            stock.put(itemName, existing + amount);
         }
     }
     
@@ -93,7 +108,7 @@ public class MinerNPC {
         stock.clear();
         
         if (Main.getInstance().getConfig().getBoolean("AddonSettings.autoSell.sendMessage")) {
-            // Mesaj gönderme
+            // Mesaj gönderme mantığı eklenebilir
         }
     }
     
@@ -137,5 +152,31 @@ public class MinerNPC {
             total += amount;
         }
         return total;
+    }
+    
+    // --- Sistem Ayarları Getter ve Setter Metodları ---
+    
+    public boolean isAutoSell() {
+        return autoSell;
+    }
+
+    public void setAutoSell(boolean autoSell) {
+        this.autoSell = autoSell;
+    }
+
+    public boolean isAutoCollect() {
+        return autoCollect;
+    }
+
+    public void setAutoCollect(boolean autoCollect) {
+        this.autoCollect = autoCollect;
+    }
+
+    public boolean isAutoBreak() {
+        return autoBreak;
+    }
+
+    public void setAutoBreak(boolean autoBreak) {
+        this.autoBreak = autoBreak;
     }
 }

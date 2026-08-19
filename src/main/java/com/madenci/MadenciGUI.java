@@ -112,6 +112,17 @@ public class MadenciGUI {
     }
     
     public static void openSystemsPanel(Player player) {
+        MinerNPC miner = MinerManager.getMiner(player);
+        if (miner == null) {
+            player.sendMessage(ChatColor.RED + "Madencin yok!");
+            return;
+        }
+
+        // MinerNPC sınıfınızda isAutoSell(), isAutoCollect(), isAutoBreak() gibi metodlar olduğunu varsayıyoruz.
+        boolean autoSellStatus = miner.isAutoSell();
+        boolean autoCollectStatus = miner.isAutoCollect();
+        boolean autoBreakStatus = miner.isAutoBreak();
+        
         Inventory inv = Bukkit.createInventory(null, 45, ChatColor.GOLD + "Sistem Ayarları");
         
         // Oto Satış
@@ -119,7 +130,7 @@ public class MadenciGUI {
             ChatColor.YELLOW + "Oto Satış", 
             ChatColor.GRAY + "Stok dolduğunda otomatik satış",
             "",
-            ChatColor.GRAY + "Durum: " + ChatColor.RED + "Kapalı",
+            ChatColor.GRAY + "Durum: " + (autoSellStatus ? ChatColor.GREEN + "Açık" : ChatColor.RED + "Kapalı"),
             "",
             ChatColor.YELLOW + "Değiştirmek için TIKLA!");
         inv.setItem(12, autoSell);
@@ -129,7 +140,7 @@ public class MadenciGUI {
             ChatColor.AQUA + "Oto Toplama", 
             ChatColor.GRAY + "Düşen itemleri otomatik toplar",
             "",
-            ChatColor.GRAY + "Durum: " + ChatColor.RED + "Kapalı",
+            ChatColor.GRAY + "Durum: " + (autoCollectStatus ? ChatColor.GREEN + "Açık" : ChatColor.RED + "Kapalı"),
             "",
             ChatColor.YELLOW + "Değiştirmek için TIKLA!");
         inv.setItem(14, autoCollect);
@@ -139,7 +150,7 @@ public class MadenciGUI {
             ChatColor.GREEN + "Oto Kırma", 
             ChatColor.GRAY + "Maden bloklarını otomatik kırar",
             "",
-            ChatColor.GRAY + "Durum: " + ChatColor.RED + "Kapalı",
+            ChatColor.GRAY + "Durum: " + (autoBreakStatus ? ChatColor.GREEN + "Açık" : ChatColor.RED + "Kapalı"),
             "",
             ChatColor.YELLOW + "Değiştirmek için TIKLA!");
         inv.setItem(16, autoBreak);
