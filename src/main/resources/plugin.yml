@@ -2,9 +2,8 @@ name: Madenci
 author: Custom
 main: com.madenci.Main
 version: 1.0.0
-api-version: 1.13
-depend: [ProtocolLib]
-softdepend: [BentoBox, Vault, ASkyBlock, FabledSkyblock, SuperiorSkyblock, IridiumSkyblock, GriefPrevention, PlotSquared, UltimateClaims, hClaims, InfClaim]
+api-version: 1.16
+softdepend: [ProtocolLib, BentoBox, Vault, ASkyBlock, FabledSkyblock, SuperiorSkyblock, IridiumSkyblock, GriefPrevention, PlotSquared, UltimateClaims, hClaims, InfClaim]
 loadbefore: [AutoPickup, UltimateStacker, WildStacker, IslandBorder, EpicSpawners]
 commands:
   madenci:
